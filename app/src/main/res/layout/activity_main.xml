@@ -5,10 +5,42 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
+        android:layout_margin="10dp"
+        android:layout_weight="0"
+        android:gravity="center"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <EditText
+            android:textColor="@android:color/white"
+            android:padding="9dp"
+            android:background="@drawable/textview_background"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <CheckBox
+            android:layout_margin="3dp"
+            android:text="@string/show_me"
+            android:layout_weight="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:layout_margin="3dp"
+            android:text="@string/view_all"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_weight="1"
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
 </LinearLayout>

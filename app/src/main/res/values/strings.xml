@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GeoHost</string>
+    <string name="view_all">View all</string>
+    <string name="show_me">Show me</string>
 </resources>

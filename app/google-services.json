@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "748739974347",
+    "firebase_url": "https://geohost-55770.firebaseio.com",
+    "project_id": "geohost-55770",
+    "storage_bucket": "geohost-55770.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:748739974347:android:485c73ec7848d9f7",
+        "android_client_info": {
+          "package_name": "com.nikitagordia.geohost"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "748739974347-1j4kp4ac2bgpl7sobubj35lcq22d0ilq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nikitagordia.geohost",
+            "certificate_hash": "b501ba0aa9c6bfac512599949ba6a80e628d413a"
+          }
+        },
+        {
+          "client_id": "748739974347-qb3hb1epkrg0hum7fkdbv67s4vs3livr.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "748739974347-qb3hb1epkrg0hum7fkdbv67s4vs3livr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlsuFjm7cO6BsX4f6TffE7nT-swkUQ_5w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "748739974347-qb3hb1epkrg0hum7fkdbv67s4vs3livr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
