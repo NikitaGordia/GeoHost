@@ -14,7 +14,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.android.gms.location.*
@@ -23,7 +22,6 @@ import com.nikitagordia.geohost.databinding.ActivityMainBinding
 import com.nikitagordia.geohost.modules.main.model.data.Position
 import com.nikitagordia.geohost.modules.main.view.fragments.ListFragment
 import com.nikitagordia.geohost.modules.main.view.fragments.UsersMapFragment
-import com.nikitagordia.geohost.modules.main.viewmodel.Action
 import com.nikitagordia.geohost.modules.main.viewmodel.Event
 import com.nikitagordia.geohost.modules.main.viewmodel.MainViewModel
 import com.nikitagordia.geohost.modules.main.viewmodel.MainViewModelInterface
@@ -33,19 +31,21 @@ class MainActivity : AppCompatActivity() {
 
     private val LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION
     private val LOCATION_REQUEST_CODE = 153
+    private val LOCATION_UPDATE_INTERVAL = 10000L
 
     private val mapFragment = UsersMapFragment.getInstance()
     private val listFragment = ListFragment.getInstance()
 
-    private var isMap = true
+    private var isMap = false
     private var edited = false
-    private var isFirst = true
 
     private lateinit var bind: ActivityMainBinding
     private lateinit var vm: MainViewModelInterface
     private lateinit var pref: PreferencesManager
     private lateinit var name: String
-    private lateinit var key: String
+    private var key: String? = null
+
+    var lastEvent: Event? = null
 
     private lateinit var client: FusedLocationProviderClient
     private val callback = object : LocationCallback() {
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private val request = LocationRequest().apply {
-        interval = 10000
+        interval = LOCATION_UPDATE_INTERVAL
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
 
@@ -70,9 +70,7 @@ class MainActivity : AppCompatActivity() {
         pref = PreferencesManager(this, resources.getString(R.string.quest))
 
         bind.name.addTextChangedListener(object : TextWatcher {
-
             override fun afterTextChanged(s: Editable?) {}
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -85,8 +83,10 @@ class MainActivity : AppCompatActivity() {
                                 edited = false
                                 vm.changeName(name)
                                 pref.setName(name)
-                                bind.name.setText("")
-                                bind.name.hint = name
+                                bind.name.apply {
+                                    setText("")
+                                    hint = name
+                                }
                             }).show()
                 }
                 name = s.toString()
@@ -96,41 +96,42 @@ class MainActivity : AppCompatActivity() {
         vm.events.observe(this, object : Observer<Event> {
             override fun onChanged(t: Event?) {
                 if (t == null) return
-                if (isFirst) {
-                    isFirst = false
-                    for (i in t.users)
-                        listFragment.adapter.onUserAdd(i)
-                    return
-                }
-                when(t.event) {
-                    Action.ADD -> listFragment.adapter.onUserAdd(t.u)
-                    Action.REMOVE -> listFragment.adapter.onUserRemove(t.u)
-                    Action.CHANGE -> listFragment.adapter.onUserChange(t.u)
-                }
+                lastEvent = t
+                listFragment.onEvent(t)
             }
         })
 
-        isMap = false
+        bind.switchMode.setOnClickListener {
+            if (isMap) isMap = false else isMap = true
+            updateFragments()
+        }
         updateFragments()
     }
 
     private fun updateFragments() {
-        if (isMap) supportFragmentManager.beginTransaction().replace(R.id.container, mapFragment).commit()
-            else supportFragmentManager.beginTransaction().replace(R.id.container, listFragment).commit()
+        if (isMap) {
+            bind.switchMode.setText(R.string.title_list)
+            supportFragmentManager.beginTransaction().replace(R.id.container, mapFragment).commit()
+        } else {
+            bind.switchMode.setText(R.string.title_activity_maps)
+            supportFragmentManager.beginTransaction().replace(R.id.container, listFragment).commit()
+            listFragment.updateKey(key)
+        }
     }
 
     override fun onStart() {
         super.onStart()
         setupName()
         key = vm.online(name)
-        listFragment.adapter.key = key
+
+        listFragment.updateKey(key)
         setupLocation()
     }
 
     override fun onStop() {
         super.onStop()
         client.removeLocationUpdates(callback)
-        reset()
+        vm.offline()
     }
 
     private fun setupLocation() {
@@ -140,7 +141,6 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun updateCallback() {
-        Log.d("mytg", "update")
         if (!checkPermissions(this)) {
             requestPermissions( Array(1) { LOCATION_PERMISSION }, LOCATION_REQUEST_CODE )
         } else client.requestLocationUpdates(request, callback, null)
@@ -150,12 +150,6 @@ class MainActivity : AppCompatActivity() {
         name = bind.name.text.toString()
         if (name == "") name = pref.getName()
         bind.name.hint = name
-    }
-
-    private fun reset() {
-        vm.offline()
-        isFirst = true
-        listFragment.adapter.clear()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

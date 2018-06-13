@@ -3,10 +3,11 @@
     <string name="view_all">View all</string>
     <string name="show_me">Show me</string>
     <string name="quest">Quest</string>
-    <string name="change_name">Change name?</string>
+    <string name="change_name">Change the name?</string>
     <string name="go">GO</string>
     <string name="you">You</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_list">List</string>
     <string name="searching">searching...</string>
     <string name="check_your_gps">Check your GPS</string>
 </resources>
