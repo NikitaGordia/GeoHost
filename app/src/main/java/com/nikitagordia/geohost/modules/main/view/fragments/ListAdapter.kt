@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.nikitagordia.geohost.R
 import com.nikitagordia.geohost.databinding.ItemUserBinding
 import com.nikitagordia.geohost.modules.main.model.MainModelSubscriber
 import com.nikitagordia.geohost.modules.main.model.data.User
@@ -41,6 +42,14 @@ class ListAdapter(private val context: Context) : RecyclerView.Adapter<ListAdapt
     }
 
     override fun onUserChange(u: User) {
+        updateUser(u)
+    }
+
+    override fun onChangeLocation(u: User) {
+        updateUser(u)
+    }
+
+    private fun updateUser(u: User) {
         var pos = search(u)
         users[pos].update(u)
         notifyItemChanged(pos)
@@ -55,7 +64,12 @@ class ListAdapter(private val context: Context) : RecyclerView.Adapter<ListAdapt
     inner class UserHolder(private val bind: ItemUserBinding) : RecyclerView.ViewHolder(bind.root) {
 
         fun onBind(u: User) {
-            if (u.key == key) bind.name.text = u.name + " (You)" else bind.name.text = u.name
+            if (u.key == key) bind.name.text = u.name + " (" + context.resources.getString(R.string.you) + ")" else bind.name.text = u.name
+            if (u.position == null) {
+                bind.location.text = context.resources.getString(R.string.searching)
+            } else {
+                bind.location.text = u.position?.lon.toString() + " : " + u.position?.lat.toString()
+            }
         }
     }
 }

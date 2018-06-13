@@ -6,8 +6,11 @@ package com.nikitagordia.geohost.modules.main.model.data
 
 data class User(val key: String, var name: String) {
 
+    var position: Position? = null
+
     fun update(u: User) {
         name = u.name
+        if (u.position != null) position = u.position
     }
 
     override fun equals(other: Any?): Boolean {
@@ -15,3 +18,5 @@ data class User(val key: String, var name: String) {
         return other.key == key
     }
 }
+
+class Position(val lon: Double, val lat: Double)

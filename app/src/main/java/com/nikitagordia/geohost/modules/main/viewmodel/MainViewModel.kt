@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.nikitagordia.geohost.modules.main.model.MainModelInterface
 import com.nikitagordia.geohost.modules.main.model.MainModelSubscriber
+import com.nikitagordia.geohost.modules.main.model.data.Position
 import com.nikitagordia.geohost.modules.main.model.data.User
 import com.nikitagordia.geohost.modules.main.model.remote.firebase.FirebaseMainModel
 
@@ -36,6 +37,10 @@ class MainViewModel : MainViewModelInterface, MainModelSubscriber, ViewModel() {
         key?.apply { model.changeName(this, name) }
     }
 
+    override fun changeLocation(pos: Position) {
+        key?.apply { model.changeLocation(this, pos) }
+    }
+
     override fun onUserAdd(u: User) {
         users += u
         events.value = Event(Action.ADD, u, users)
@@ -47,6 +52,14 @@ class MainViewModel : MainViewModelInterface, MainModelSubscriber, ViewModel() {
     }
 
     override fun onUserChange(u: User) {
+        updateUser(u)
+    }
+
+    override fun onChangeLocation(u: User) {
+        updateUser(u)
+    }
+
+    private fun updateUser(u: User) {
         users.forEachIndexed { index, user -> if (user == u) { users.get(index).update(u); return@forEachIndexed } }
         events.value = Event(Action.CHANGE, u, users)
     }

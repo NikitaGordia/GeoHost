@@ -6,6 +6,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.nikitagordia.geohost.modules.main.model.MainModelInterface
 import com.nikitagordia.geohost.modules.main.model.MainModelSubscriber
+import com.nikitagordia.geohost.modules.main.model.data.Position
 import com.nikitagordia.geohost.modules.main.model.data.User
 
 /**
@@ -16,6 +17,9 @@ class FirebaseMainModel : MainModelInterface {
 
     val NAME = "name"
     val USERS = "users"
+    val POSITION = "position"
+    val LAT = "lat"
+    val LON = "lon"
 
     val db = FirebaseDatabase.getInstance().getReference(USERS)
 
@@ -38,6 +42,11 @@ class FirebaseMainModel : MainModelInterface {
         db.child(key).child(NAME).setValue(name)
     }
 
+    override fun changeLocation(key: String, pos: Position) {
+        db.child(key).child(POSITION).child(LON).setValue(pos.lon)
+        db.child(key).child(POSITION).child(LAT).setValue(pos.lat)
+    }
+
     inner class ChildListener : ChildEventListener {
 
         var subscriber: MainModelSubscriber? = null
@@ -47,15 +56,21 @@ class FirebaseMainModel : MainModelInterface {
         override fun onChildMoved(p0: DataSnapshot?, p1: String?) {}
 
         override fun onChildChanged(p0: DataSnapshot?, p1: String?) {
-            subscriber?.apply { onUserChange(User(p0!!.key, p0.child(NAME).value.toString())) }
+            subscriber?.apply { p0?.apply { onUserChange(getU(p0)) } }
         }
 
         override fun onChildAdded(p0: DataSnapshot?, p1: String?) {
-            subscriber?.apply { onUserAdd(User(p0!!.key, p0.child(NAME).value.toString())) }
+            subscriber?.apply { p0?.apply { onUserAdd(getU(p0)) } }
         }
 
         override fun onChildRemoved(p0: DataSnapshot?) {
-            subscriber?.apply { onUserRemove(User(p0!!.key, p0.child(NAME).value.toString())) }
+            subscriber?.apply { p0?.apply { onUserRemove(getU(p0)) } }
+        }
+
+        private fun getU(p0: DataSnapshot) : User {
+            val u = User(p0.key, p0.child(NAME).value.toString())
+            if (p0.child(POSITION).child(LON).value != null && p0.child(POSITION).child(LAT).value != null) u.position = Position(p0.child(POSITION).child(LON).value as Double, p0.child(POSITION).child(LAT).value as Double)
+            return u
         }
     }
 }
