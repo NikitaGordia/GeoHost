@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity() {
                 if (t == null) return
                 lastEvent = t
                 listFragment.onEvent(t)
+                mapFragment.onEvent(t)
             }
         })
 
