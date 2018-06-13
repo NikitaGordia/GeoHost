@@ -19,8 +19,8 @@ import com.nikitagordia.geohost.modules.main.viewmodel.Event
 class ListFragment : Fragment() {
 
     private lateinit var list: RecyclerView
-    lateinit var adapter: ListAdapter
-    var isFirst = true
+    private var isFirst = true
+    private lateinit var adapter: ListAdapter
     var key: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -15,15 +15,15 @@ import com.nikitagordia.geohost.modules.main.model.data.User
 
 class FirebaseMainModel : MainModelInterface {
 
-    val NAME = "name"
-    val USERS = "users"
-    val POSITION = "position"
-    val LAT = "lat"
-    val LON = "lon"
+    private val NAME = "name"
+    private val USERS = "users"
+    private val POSITION = "position"
+    private val LAT = "lat"
+    private val LON = "lon"
 
-    val db = FirebaseDatabase.getInstance().getReference(USERS)
+    private val db = FirebaseDatabase.getInstance().getReference(USERS)
 
-    val listener = ChildListener()
+    private val listener = ChildListener()
 
     override fun online(name: String, subscriber: MainModelSubscriber): String? {
         val key = db.push().key ?: return null

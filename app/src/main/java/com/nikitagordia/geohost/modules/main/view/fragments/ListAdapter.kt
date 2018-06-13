@@ -16,7 +16,7 @@ import com.nikitagordia.geohost.modules.main.model.data.User
 
 class ListAdapter(private val context: Context) : RecyclerView.Adapter<ListAdapter.UserHolder>(), MainModelSubscriber {
 
-    val users = mutableListOf<User>()
+    private val users = mutableListOf<User>()
     var key: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = UserHolder(ItemUserBinding.inflate(LayoutInflater.from(context), parent, false))
@@ -65,7 +65,7 @@ class ListAdapter(private val context: Context) : RecyclerView.Adapter<ListAdapt
     inner class UserHolder(private val bind: ItemUserBinding) : RecyclerView.ViewHolder(bind.root) {
 
         fun onBind(u: User) {
-            if (u.key == key) bind.name.text = u.name + " (" + context.resources.getString(R.string.you) + ")" else bind.name.text = u.name
+            if (u.key == key) bind.name.text = context.resources.getString(R.string.you, u.name) else bind.name.text = u.name
             if (u.position == null) {
                 bind.location.text = context.resources.getString(R.string.searching)
             } else {

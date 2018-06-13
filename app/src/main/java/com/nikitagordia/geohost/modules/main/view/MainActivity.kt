@@ -14,7 +14,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.widget.Toast
 import com.google.android.gms.location.*
 import com.nikitagordia.geohost.R
@@ -67,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         bind = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
         vm = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        pref = PreferencesManager(this, resources.getString(R.string.quest))
+        pref = PreferencesManager(this)
 
         bind.name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
@@ -78,8 +77,7 @@ class MainActivity : AppCompatActivity() {
                 if (!edited) {
                     edited = true
                     Snackbar.make(bind.coordinatorLayout, resources.getString(R.string.change_name), Snackbar.LENGTH_INDEFINITE)
-                            .setAction(R.string.go, View.OnClickListener {
-                                if (name == "") name = resources.getString(R.string.quest)
+                            .setAction(R.string.go, {
                                 edited = false
                                 vm.changeName(name)
                                 pref.setName(name)
@@ -114,7 +112,7 @@ class MainActivity : AppCompatActivity() {
             bind.switchMode.setText(R.string.title_list)
             supportFragmentManager.beginTransaction().replace(R.id.container, mapFragment).commit()
         } else {
-            bind.switchMode.setText(R.string.title_activity_maps)
+            bind.switchMode.setText(R.string.title_maps)
             supportFragmentManager.beginTransaction().replace(R.id.container, listFragment).commit()
             listFragment.updateKey(key)
         }
@@ -149,7 +147,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupName() {
         name = bind.name.text.toString()
-        if (name == "") name = pref.getName()
+        if (name.isEmpty()) name = pref.getName(resources.getString(R.string.guest))
         bind.name.hint = name
     }
 
