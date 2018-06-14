@@ -1,6 +1,6 @@
 package com.nikitagordia.geohost.modules.main.model
 
-import com.nikitagordia.geohost.modules.main.model.data.Position
+import com.google.android.gms.maps.model.LatLng
 import com.nikitagordia.geohost.modules.main.model.data.User
 
 /**
@@ -15,7 +15,7 @@ interface MainModelInterface {
 
     fun changeName(key: String, name: String)
 
-    fun changeLocation(key: String, pos: Position)
+    fun changeLocation(key: String, pos: LatLng)
 }
 
 interface MainModelSubscriber {

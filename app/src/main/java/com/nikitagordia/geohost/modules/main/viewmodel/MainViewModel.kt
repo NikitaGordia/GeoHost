@@ -3,9 +3,9 @@ package com.nikitagordia.geohost.modules.main.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
+import com.google.android.gms.maps.model.LatLng
 import com.nikitagordia.geohost.modules.main.model.MainModelInterface
 import com.nikitagordia.geohost.modules.main.model.MainModelSubscriber
-import com.nikitagordia.geohost.modules.main.model.data.Position
 import com.nikitagordia.geohost.modules.main.model.data.User
 import com.nikitagordia.geohost.modules.main.model.remote.firebase.FirebaseMainModel
 
@@ -37,7 +37,7 @@ class MainViewModel : MainViewModelInterface, MainModelSubscriber, ViewModel() {
         key?.apply { model.changeName(this, name) }
     }
 
-    override fun changeLocation(pos: Position) {
+    override fun changeLocation(pos: LatLng) {
         key?.apply { model.changeLocation(this, pos) }
     }
 

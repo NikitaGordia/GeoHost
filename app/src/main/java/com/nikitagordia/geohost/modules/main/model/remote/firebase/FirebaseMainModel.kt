@@ -1,12 +1,13 @@
 package com.nikitagordia.geohost.modules.main.model.remote.firebase
 
+import android.util.ArrayMap
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.nikitagordia.geohost.modules.main.model.MainModelInterface
 import com.nikitagordia.geohost.modules.main.model.MainModelSubscriber
-import com.nikitagordia.geohost.modules.main.model.data.Position
 import com.nikitagordia.geohost.modules.main.model.data.User
 
 /**
@@ -22,12 +23,11 @@ class FirebaseMainModel : MainModelInterface {
     private val LON = "lon"
 
     private val db = FirebaseDatabase.getInstance().getReference(USERS)
-
     private val listener = ChildListener()
 
-    override fun online(name: String, subscriber: MainModelSubscriber): String? {
+    override fun online(name: String, sub: MainModelSubscriber): String? {
         val key = db.push().key ?: return null
-        listener.subscriber = subscriber
+        listener.subscriber = sub
         db.addChildEventListener(listener)
         db.child(key).child(NAME).setValue(name)
         return key
@@ -42,9 +42,12 @@ class FirebaseMainModel : MainModelInterface {
         db.child(key).child(NAME).setValue(name)
     }
 
-    override fun changeLocation(key: String, pos: Position) {
-        db.child(key).child(POSITION).child(LON).setValue(pos.lon)
-        db.child(key).child(POSITION).child(LAT).setValue(pos.lat)
+    override fun changeLocation(key: String, pos: LatLng) {
+        val map = ArrayMap<String, Double>()
+        map.put(LON, pos.longitude)
+        map.put(LAT, pos.latitude)
+
+        db.child(key).child(POSITION).setValue(map)
     }
 
     inner class ChildListener : ChildEventListener {
@@ -69,7 +72,7 @@ class FirebaseMainModel : MainModelInterface {
 
         private fun getU(p0: DataSnapshot) : User {
             val u = User(p0.key, p0.child(NAME).value.toString())
-            if (p0.child(POSITION).child(LON).value != null && p0.child(POSITION).child(LAT).value != null) u.position = Position(p0.child(POSITION).child(LON).value as Double, p0.child(POSITION).child(LAT).value as Double)
+            if (p0.child(POSITION).child(LON).value != null && p0.child(POSITION).child(LAT).value != null) u.position = LatLng(p0.child(POSITION).child(LON).value as Double, p0.child(POSITION).child(LAT).value as Double)
             return u
         }
     }

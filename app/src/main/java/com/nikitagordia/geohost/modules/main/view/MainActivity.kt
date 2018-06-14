@@ -14,11 +14,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.model.LatLng
 import com.nikitagordia.geohost.R
 import com.nikitagordia.geohost.databinding.ActivityMainBinding
-import com.nikitagordia.geohost.modules.main.model.data.Position
 import com.nikitagordia.geohost.modules.main.view.fragments.ListFragment
 import com.nikitagordia.geohost.modules.main.view.fragments.UsersMapFragment
 import com.nikitagordia.geohost.modules.main.viewmodel.Event
@@ -37,12 +38,12 @@ class MainActivity : AppCompatActivity() {
 
     private var isMap = false
     private var edited = false
+    private var key: String? = null
 
     private lateinit var bind: ActivityMainBinding
     private lateinit var vm: MainViewModelInterface
     private lateinit var pref: PreferencesManager
     private lateinit var name: String
-    private var key: String? = null
 
     var lastEvent: Event? = null
 
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     private val callback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
             if (p0 == null) return
-            vm.changeLocation(Position(p0.locations.last().longitude, p0.locations.last().latitude))
+            vm.changeLocation(LatLng(p0.locations.last().longitude, p0.locations.last().latitude))
         }
         override fun onLocationAvailability(p0: LocationAvailability?) {
             if (p0 != null && !p0.isLocationAvailable) Toast.makeText(this@MainActivity, resources.getString(R.string.check_your_gps), Toast.LENGTH_SHORT).show()

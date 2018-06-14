@@ -1,8 +1,7 @@
 package com.nikitagordia.geohost.modules.main.viewmodel
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import com.nikitagordia.geohost.modules.main.model.data.Position
+import com.google.android.gms.maps.model.LatLng
 import com.nikitagordia.geohost.modules.main.model.data.User
 
 /**
@@ -20,7 +19,7 @@ interface MainViewModelInterface {
 
     fun changeName(name: String)
 
-    fun changeLocation(pos: Position)
+    fun changeLocation(pos: LatLng)
 }
 
 class Event(val event: Action, val u: User, val users: MutableList<User>)

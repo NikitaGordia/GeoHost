@@ -1,12 +1,14 @@
 package com.nikitagordia.geohost.modules.main.model.data
 
+import com.google.android.gms.maps.model.LatLng
+
 /**
  * Created by nikitagordia on 6/12/18.
  */
 
 data class User(val key: String, var name: String) {
 
-    var position: Position? = null
+    var position: LatLng? = null
 
     fun update(u: User) {
         name = u.name
@@ -18,5 +20,3 @@ data class User(val key: String, var name: String) {
         return other.key == key
     }
 }
-
-class Position(val lon: Double, val lat: Double)
